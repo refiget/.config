@@ -6,7 +6,6 @@
     "bash": "allow",
     "webfetch": "allow",
     "external_directory": "allow",
-    "consult": "deny",
   },
   "agent": {
     "plan": {
@@ -21,12 +20,12 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "N1N Relay",
       "options": {
-        "baseURL": "{env:N1N_RELAY_BASE_URL}",
+        "baseURL": "{env:N1N_RELAY_BASE_URL}/v1",
         "apiKey": "{env:N1N_RELAY_API_KEY}"
       },
       "models": {
-        "claude-sonnet-4-5-20250929": {
-          "name": "Claude Sonnet 4.5"
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6"
         },
         "claude-haiku-4-5-20251001": {
           "name": "Claude Haiku 4.5"
