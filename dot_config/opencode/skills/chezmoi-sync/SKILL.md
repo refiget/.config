@@ -2,7 +2,7 @@
 name: chezmoi-sync
 description: sync chezmoi changes (re-add, commit, apply)
 ---
-
+/opt/homebrew/bin/chezmoi
 ## Steps
 1. Get changed files:
    chezmoi status
