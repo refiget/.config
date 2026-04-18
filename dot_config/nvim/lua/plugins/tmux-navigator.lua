@@ -21,9 +21,18 @@ local function navigate(cmd, direction)
 
 	local win_after = vim.api.nvim_get_current_win()
 	local pane_after = tmux_active_pane()
-	if pane_before and pane_after == pane_before and win_after == win_before then
-		focus_yabai(direction)
+	if win_after ~= win_before then
+		return
 	end
+
+	if pane_before then
+		if pane_after == pane_before then
+			focus_yabai(direction)
+		end
+		return
+	end
+
+	focus_yabai(direction)
 end
 
 return {

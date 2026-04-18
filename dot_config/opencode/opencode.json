@@ -15,6 +15,17 @@
       "model": "openai/gpt-5.3-codex"
     }
   },
+  "mcp": {
+    "brave": {
+      "type": "local",
+      "command": ["npx", "-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
+      "enabled": true,
+      "timeout": 120000,
+      "environment": {
+        "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+      }
+    }
+  },
   "provider": {
     "n1n_relay": {
       "npm": "@ai-sdk/openai-compatible",
