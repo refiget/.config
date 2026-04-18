@@ -21,10 +21,11 @@ map("n", "<leader>[", "bi[<esc>ea]<esc>", opts)
 map("n", "<leader>{", "bi{<esc>ea}<esc>", opts)
 
 
-map("n", "<leader>h", "<c-w>h", opts)
-map("n", "<leader>j", "<c-w>j", opts)
-map("n", "<leader>k", "<c-w>k", opts)
-map("n", "<leader>l", "<c-w>l", opts)
+-- 改用tmux-navigator.
+-- map("n", "<leader>h", "<c-w>h", opts)
+-- map("n", "<leader>j", "<c-w>j", opts)
+-- map("n", "<leader>k", "<c-w>k", opts)
+-- map("n", "<leader>l", "<c-w>l", opts)
 
 
 local function open_run_term(cmd, cfg)
