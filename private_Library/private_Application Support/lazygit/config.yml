@@ -1,0 +1,35 @@
+gui:
+  # Enable Vim-like keybindings (hjkl, etc.)
+  useCtrlKeys: true
+  nerdFontsVersion: 3   # optional: better icons
+  showCommandLog: false
+  theme:
+    # Catppuccin Mocha-ish, aligned with tmux/nvim (low-chrome, crisp text)
+    activeBorderColor:
+      - "#b4befe"   # lavender (tmux normal accent)
+      - bold
+    inactiveBorderColor:
+      - "#313244"   # surface0 (quieter)
+    optionsTextColor:
+      - "#89b4fa"   # blue
+    selectedLineBgColor:
+      - "#181825"   # mantle (more subtle)
+    selectedLineFgColor:
+      - "#cdd6f4"   # text
+    cherryPickedCommitTextStyle:
+      - "#f5c2e7"   # pink
+    markedBaseCommitTextStyle:
+      - "#fab387"   # peach
+    unstagedChangesColor:
+      - "#eba0ac"   # maroon (less alarming)
+    defaultFgColor:
+      - "#cdd6f4"   # text
+
+keybinding:
+  universal:
+    quit: "q"
+    return: "<esc>"   # makes Esc behave like leaving a mode
+  files:
+    nextItem: "j"
+    prevItem: "k"
+    toggleStaged: "space"

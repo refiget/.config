@@ -1,0 +1,37 @@
+font-family = JetBrainsMono Nerd Font
+font-family = Maple Mono NF CN
+font-family = Symbols Nerd Font Mono
+font-family = Apple Color Emoji
+font-size = 18
+font-feature = liga
+font-feature = calt
+                
+
+# 只在必要时用 mapping
+font-codepoint-map = U+1F000-U+1FAFF=Apple Color Emoji
+font-codepoint-map = U+E000-U+F8FF=Symbols Nerd Font Mono
+
+# kitty current-theme.conf -> Ghostty
+theme = TokyoNight Storm
+background = #222437
+
+# kitty keyboard/UI migration
+macos-option-as-alt = true
+window-decoration = auto
+window-padding-x = 10
+window-padding-y = 10
+scrollback-limit = 10000
+bell-features = no-system,no-audio
+cursor-style = bar
+cursor-style-blink = false
+grapheme-width-method = legacy
+macos-titlebar-style = hidden
+
+# Notify when long-running commands finish
+notify-on-command-finish = unfocused
+notify-on-command-finish-after = 8s
+notify-on-command-finish-action = notify
+
+title = " "
+
+shell-integration-features = cursor,no-sudo,no-title,no-ssh-env,no-ssh-terminfo,path

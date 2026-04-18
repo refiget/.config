@@ -1,0 +1,16 @@
+[mgr]
+linemode = "size_and_mtime"
+show_hidden = true
+sort_by = "natural"
+show_symlink = true
+[opener]
+edit = [
+    { run = 'nvim "$@"', desc = "Edit", block = true },
+]
+open = [
+    { run = 'open "$@"', desc = "Open", orphan = true }
+]
+
+
+[clipboard]
+copy = "pbcopy"

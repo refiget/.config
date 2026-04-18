@@ -1,0 +1,36 @@
+{
+	"title": "CapsLock: Tap Esc, Hold Hyper",
+	"rules": [
+		{
+			"description": "CapsLock → Esc (tap), Hyper (hold)",
+			"manipulators": [
+				{
+					"type": "basic",
+					"from": {
+						"key_code": "caps_lock",
+						"modifiers": {
+							"optional": [
+								"any"
+							]
+						}
+					},
+					"to_if_alone": [
+						{
+							"key_code": "escape"
+						}
+					],
+					"to_if_held_down": [
+						{
+							"key_code": "left_shift",
+							"modifiers": [
+								"left_control",
+								"left_option",
+								"left_command"
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

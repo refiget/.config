@@ -1,0 +1,28 @@
+# Zim Configuration
+# ============================================================
+# Keep this file declarative (zmodule lines only). Put checks/logic in zsh/conf.d.
+
+# -----------------
+# Base environment and utilities
+# -----------------
+zmodule environment
+zmodule input
+zmodule termtitle
+zmodule utility
+
+# Completion
+zmodule completion
+zmodule zsh-users/zsh-completions
+
+# Git helpers (git-info is required for most prompt themes)
+zmodule git
+zmodule git-info
+
+# UX (widgets/highlighting)
+zmodule zdharma-continuum/fast-syntax-highlighting
+zmodule zsh-users/zsh-autosuggestions
+zmodule Aloxaf/fzf-tab
+
+# Prompt theme (load last)
+# Pure prompt (external). Needs async + pure sourced.
+zmodule sindresorhus/pure --name prompt-pure --source async.zsh --source pure.zsh

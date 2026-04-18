@@ -1,0 +1,39 @@
+# Universal environment for all zsh invocations (GUI apps, IDE, terminal, scripts)
+
+# Config roots
+export ZSH_CONF_DIR="$HOME/.config/zsh/conf.d"
+export SCRIPTS_DIR="$HOME/scripts"
+
+# Locale
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+
+# Core editors/pager
+export EDITOR="nvim"
+export VISUAL="nvim"
+export PAGER="less"
+
+export PNPM_HOME="$HOME/Library/pnpm"
+
+# Stable base PATH (GUI + shell consistency)
+typeset -U path PATH
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.opencode/bin"
+  "$PNPM_HOME"
+  "$SCRIPTS_DIR"
+  "/opt/homebrew/bin"
+  "/opt/homebrew/sbin"
+  "/usr/local/bin"
+  "/usr/local/sbin"
+  "/usr/bin"
+  "/bin"
+  "/usr/sbin"
+  "/sbin"
+  $path
+)
+export PATH
+
+# Rust toolchain
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"

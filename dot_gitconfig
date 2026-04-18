@@ -1,0 +1,27 @@
+# ==========================================
+# Dotfiles General Config
+# ==========================================
+[core]
+    editor = nvim
+    ignorecase = false
+    autocrlf = input
+
+[init]
+    defaultBranch = main
+
+[color]
+    ui = true
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    cm = commit
+    cp = cherry-pick
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+# ==========================================
+# Include Local Config (User/Email)
+# ==========================================
+[include]
+    path = ~/.gitconfig.local

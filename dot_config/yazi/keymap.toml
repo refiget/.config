@@ -1,0 +1,13 @@
+[mgr]
+
+# ⬆ Swap z and Z in manager mode
+
+[[mgr.prepend_keymap]]
+on   = "z"
+run  = "plugin zoxide"
+desc = "Zoxide jump (swapped)"
+
+[[mgr.prepend_keymap]]
+on   = "Z"
+run  = "cd --interactive"
+desc = "Interactive fzf-like jump (swapped)"

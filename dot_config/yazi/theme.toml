@@ -1,0 +1,7 @@
+[status]
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+# Indicator end-caps: prefer solid blocks to avoid font seam gaps
+[indicator]
+padding = { open = "█", close = "█" }

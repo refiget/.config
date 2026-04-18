@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+
+# Load scripting addition after Dock restart
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+# Keep logs quiet
+yabai -m config debug_output off
+
+# Mouse behavior: click-to-focus only
+yabai -m config focus_follows_mouse off
+yabai -m config mouse_follows_focus off
+
+# Simple and light gaps/padding
+yabai -m config top_padding    8
+yabai -m config bottom_padding 8
+yabai -m config left_padding   8
+yabai -m config right_padding  8
+yabai -m config window_gap     8
+
+# Don't manage special/system windows
+yabai -m rule --add app="^iPhone Mirroring$" manage=off
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^System Preferences$" manage=off
+yabai -m rule --add app="^Installer$" manage=off
+yabai -m rule --add app="^Install macOS.*$" manage=off
+
+# Fixed app -> space mapping
+yabai -m rule --add app="^(kitty|Alacritty|Ghostty)$" space=1 manage=on
+yabai -m rule --add app="^(ChatGPT|ChatGPT Desktop)$" space=2
+yabai -m rule --add app="^(WeChat|微信)$" space=3
+
+# Float Settings / Preferences windows only for selected apps
+setting_float_apps=(
+  "IntelliJ IDEA"
+  "Visual Studio Code"
+)
+
+escape_regex() {
+  printf '%s' "$1" | sed -E 's/[][(){}.^$*+?|\\/]/\\&/g'
+}
+
+setting_float_apps_regex="^("
+for app in "${setting_float_apps[@]}"; do
+  setting_float_apps_regex+="$(escape_regex "$app")|"
+done
+setting_float_apps_regex="${setting_float_apps_regex%|})$"
+
+yabai -m rule --add app="$setting_float_apps_regex" title="^(Settings|Preferences).*" manage=off
+
+# Space layout policy
+yabai -m config --space 1 layout bsp
+yabai -m config --space 2 layout bsp
+yabai -m config --space 3 layout float
+
+# No external bar reservation
+yabai -m config external_bar all:0:0
