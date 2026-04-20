@@ -17,7 +17,7 @@ yabai -m config top_padding    0
 yabai -m config bottom_padding 0
 yabai -m config left_padding   0
 yabai -m config right_padding  0
-yabai -m config window_gap     0
+yabai -m config window_gap     3
 
 # Don't manage special/system windows
 yabai -m rule --add app="^iPhone Mirroring$" manage=off
@@ -48,7 +48,3 @@ done
 setting_float_apps_regex="${setting_float_apps_regex%|})$"
 
 yabai -m rule --add app="$setting_float_apps_regex" title="^(Settings|Preferences).*" manage=off
-
-
-# No external bar reservation
-yabai -m config external_bar all:0:0

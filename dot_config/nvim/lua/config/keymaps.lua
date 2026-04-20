@@ -99,8 +99,8 @@ local function parse_classpath(root, out_dir)
     end
   else
     local home = vim.loop.os_homedir() or ""
-    local fallback_glob = vim.env.CS61B_LIB_GLOB_ALL or (home .. "/cs61b/library-sp24/*")
-    table.insert(cp_parts, vim.fn.expand(fallback_glob))
+    local fallback_glob = home .. "/Desktop/cs61b/library-sp24/*"
+    table.insert(cp_parts, fallback_glob)
     if vim.fn.isdirectory(root .. "/tests") == 1 then
       table.insert(src_dirs, "tests")
     end
@@ -120,6 +120,8 @@ local function run_java_main()
   local out_dir = root .. "/out"
   local fqcn = java_fqcn()
   local cp, src_dirs = parse_classpath(root, out_dir)
+  local java_bin = "/opt/homebrew/opt/openjdk@17/bin/java"
+  local javac_bin = "/opt/homebrew/opt/openjdk@17/bin/javac"
 
   local compile_parts = {}
   for _, d in ipairs(src_dirs) do
@@ -131,9 +133,11 @@ local function run_java_main()
     "set -e",
     "OUT=" .. vim.fn.shellescape(out_dir),
     "CP=" .. vim.fn.shellescape(cp),
+    "JAVA_BIN=" .. vim.fn.shellescape(java_bin),
+    "JAVAC_BIN=" .. vim.fn.shellescape(javac_bin),
     "mkdir -p \"$OUT\"",
-    "(" .. find_cmd .. ") | xargs -0 javac -proc:none -Xlint:-options -cp \"$CP\" -d \"$OUT\"",
-    "java -cp \"$CP\" " .. vim.fn.shellescape(fqcn),
+    "(" .. find_cmd .. ") | xargs -0 \"$JAVAC_BIN\" -proc:none -Xlint:-options --release 17 -cp \"$CP\" -d \"$OUT\"",
+    "\"$JAVA_BIN\" -cp \"$CP\" " .. vim.fn.shellescape(fqcn),
   }, " && ")
 
   local src_win = vim.api.nvim_get_current_win()
