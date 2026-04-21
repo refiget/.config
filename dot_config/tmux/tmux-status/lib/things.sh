@@ -29,27 +29,6 @@ status_escape_tmux_text() {
   printf '%s' "$text"
 }
 
-status_things_center_text() {
-  local text="${1:-}"
-  local width="${2:-26}"
-  local total left right
-
-  if [[ ! "$width" =~ ^[0-9]+$ ]] || (( width < 4 )); then
-    printf '%s' "$text"
-    return 0
-  fi
-
-  if (( ${#text} >= width )); then
-    printf '%s' "$text"
-    return 0
-  fi
-
-  total=$((width - ${#text}))
-  left=$((total / 2))
-  right=$((total - left))
-  printf '%*s%s%*s' "$left" '' "$text" "$right" ''
-}
-
 status_things_center_padding() {
   local text="${1:-}"
   local width="${2:-28}"

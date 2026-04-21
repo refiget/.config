@@ -11,9 +11,8 @@ The right status is rendered as a single tmux status string with this segment or
 
 1. session segment
 2. optional Things segment
-3. metrics segment
-4. time segment
-5. date segment
+3. time segment
+4. date segment
 
 ## Stable compatibility points
 
@@ -28,17 +27,15 @@ The refactor preserves:
 - session-pill cutoff via `TMUX_SESSION_RIGHT_MIN_WIDTH`
 - session label truncation via `TMUX_SESSION_RIGHT_MAXLEN`
 - `TMUX_SESSION_ICONS` parsing
-- optional `TMUX_THINGS` / `TMUX_THINGS_*` segment gating and timing
-- `TMUX_RAINBARF` / `TMUX_RAINBARF_*` behavior
-- `@cpu_ema` as the smoothing state key
+- optional `TMUX_THINGS` / `TMUX_THINGS_*` segment gating and refresh timing
 - graceful degradation when Things AppleScript refresh fails
 
 ## Internal split targets
 
 `tmux-status/right.sh` may delegate to:
 - `tmux-status/lib/runtime.sh`
-- `tmux-status/lib/metrics.sh`
 - `tmux-status/lib/segments.sh`
+- `tmux-status/lib/things.sh`
 
 ## Regression checklist
 
@@ -48,8 +45,6 @@ After changes, verify at least:
 - canonical name like `3__work` shows mapped icon + `work`
 - legacy name like `3-work` still parses
 - long session labels are truncated the same way
-- Things segment rotates cached Today titles every 30s by default
 - Things cache refreshes no more than once per 60s by default
 - empty Today cache renders `ALL DONE`
-- disabling metrics removes only that segment
-- `@cpu_ema` continues to update
+- multi-pane windows reuse the pane color on the session segment

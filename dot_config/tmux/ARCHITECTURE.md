@@ -89,7 +89,6 @@ The following are treated as stable repo entrypoints and remain valid after the 
 These tmux options are treated as internal repo state. Their keys are intentionally preserved for compatibility, but they are not documented as external extension points:
 
 - `@mru_pane_ids`
-- `@cpu_ema`
 - `@theme_color`
 - `@session_manager_suspended`
 

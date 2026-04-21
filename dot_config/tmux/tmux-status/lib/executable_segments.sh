@@ -1,22 +1,5 @@
 #!/usr/bin/env bash
 
-status_build_pane_flag_segment() {
-  local status_bg="${1:-default}"
-  local pane_count pane_flag_fg pane_flag_bg
-
-  pane_count=$(tmux display-message -p '#{window_panes}' 2>/dev/null || true)
-  if [[ -z "${pane_count:-}" || ! "$pane_count" =~ ^[0-9]+$ || "$pane_count" -le 1 ]]; then
-    return 0
-  fi
-
-  pane_flag_fg=$(status_option_or '@pane_flag_fg' '#FFF4D6')
-  pane_flag_bg=$(status_option_or '@pane_flag_bg' '#6B4E2E')
-  printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] 󰕴 #[fg=%s,bg=%s]#[default] ' \
-    "$pane_flag_bg" "$status_bg" \
-    "$pane_flag_fg" "$pane_flag_bg" \
-    "$pane_flag_bg" "$status_bg"
-}
-
 status_build_session_segment() {
   local width="${1:-}"
   local subtext0="${2:-#a6adc8}"
@@ -75,9 +58,15 @@ status_build_session_segment() {
     session_icon="$display_idx"
   fi
 
-  local session_fg session_bg max_slen
+  local session_fg session_bg pane_count pane_flag_bg max_slen
   session_fg=$(status_option_or '@session_label_fg' "$subtext0")
   session_bg=$(status_option_or '@session_label_bg' '')
+
+  pane_count=$(tmux display-message -p '#{window_panes}' 2>/dev/null || true)
+  if [[ -n "$session_bg" && "$pane_count" =~ ^[0-9]+$ ]] && (( pane_count > 1 )); then
+    pane_flag_bg=$(status_option_or '@pane_flag_bg' '#6B4E2E')
+    session_bg="$pane_flag_bg"
+  fi
 
   max_slen=${TMUX_SESSION_RIGHT_MAXLEN:-12}
   if (( ${#session_name_clean} > max_slen )); then
