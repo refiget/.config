@@ -85,11 +85,10 @@ status_build_session_segment() {
   fi
 
   if [[ -n "$session_bg" ]]; then
-    printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] %s %s #[fg=%s,bg=%s]#[default] ' \
+    printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] %s %s #[default]' \
       "$session_bg" "$status_bg" \
       "$session_fg" "$session_bg" \
-      "$session_icon" "$session_name_clean" \
-      "$session_bg" "$status_bg"
+      "$session_icon" "$session_name_clean"
   else
     printf '#[fg=%s] %s %s #[default]' "$session_fg" "$session_icon" "$session_name_clean"
   fi
@@ -103,7 +102,7 @@ status_build_time_segment() {
   time_value=$(date +"${TMUX_TIME_ONLY_FMT:-%H:%M}")
   time_fg=$(status_option_or '@time_fg' "$fallback_fg")
   time_bg=$(status_option_or '@time_bg' "$status_bg")
-  printf '#[fg=%s,bg=%s]#[fg=%s,bg=%s] %s #[default]' "$time_bg" "$status_bg" "$time_fg" "$time_bg" "$time_value"
+  printf '#[fg=%s,bg=%s] %s #[default]' "$time_fg" "$time_bg" "$time_value"
 }
 
 status_build_date_segment() {

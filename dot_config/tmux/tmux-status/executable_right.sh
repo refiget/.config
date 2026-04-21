@@ -6,8 +6,8 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_dir/lib/runtime.sh"
 # shellcheck source=lib/segments.sh
 source "$script_dir/lib/segments.sh"
-# shellcheck source=lib/metrics.sh
-source "$script_dir/lib/metrics.sh"
+# shellcheck source=lib/things.sh
+source "$script_dir/lib/things.sh"
 
 min_width=${TMUX_RIGHT_MIN_WIDTH:-90}
 width=$(status_client_width)
@@ -30,15 +30,15 @@ segment_fg=$(status_option_or '@status_fg' "$overlay0")
 
 pane_flag_segment=$(status_build_pane_flag_segment "$status_bg")
 session_segment=$(status_build_session_segment "$width" "$subtext0" "$status_bg")
-rainbarf_segment=$(status_build_rainbarf_segment "$width" "$segment_fg")
+things_segment=$(status_build_things_segment "$width" "$status_bg")
 time_segment=$(status_build_time_segment "$status_bg" "$subtext0")
 date_segment=$(status_build_date_segment "$status_bg" "$subtext0")
 right_cap=""
 
-printf '%s%s%s%s%s' \
+printf '%s%s%s%s%s%s' \
   "$pane_flag_segment" \
   "$session_segment" \
-  "$rainbarf_segment" \
+  "$things_segment" \
   "$time_segment" \
   "$date_segment" \
   "$right_cap"

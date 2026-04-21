@@ -1,5 +1,40 @@
 #!/usr/bin/env bash
 
+status_memory_percent() {
+  local memory_percent=""
+
+  if command -v memory_pressure >/dev/null 2>&1; then
+    memory_percent=$(memory_pressure 2>/dev/null | awk '
+      /System-wide memory free percentage:/ {
+        gsub(/%/, "", $5)
+        if ($5 ~ /^[0-9]+$/) {
+          printf "%d", 100 - $5
+          exit
+        }
+      }')
+  fi
+
+  if [[ -z "$memory_percent" ]] && command -v vm_stat >/dev/null 2>&1; then
+    memory_percent=$(vm_stat 2>/dev/null | awk '
+      /page size of/ {gsub(/\./, "", $8); page_size=$8}
+      /^Pages free:/ {gsub(/\./, "", $3); free=$3}
+      /^Pages active:/ {gsub(/\./, "", $3); active=$3}
+      /^Pages inactive:/ {gsub(/\./, "", $3); inactive=$3}
+      /^Pages speculative:/ {gsub(/\./, "", $3); speculative=$3}
+      /^Pages wired down:/ {gsub(/\./, "", $4); wired=$4}
+      /^Pages occupied by compressor:/ {gsub(/\./, "", $5); compressed=$5}
+      END {
+        used = active + inactive + speculative + wired + compressed
+        total = used + free
+        if (total > 0) {
+          printf "%d", (used * 100) / total
+        }
+      }')
+  fi
+
+  printf '%s' "${memory_percent:-0}"
+}
+
 status_build_rainbarf_segment() {
   local width="${1:-}"
   local segment_fg="${2:-#6c7086}"
@@ -17,7 +52,7 @@ status_build_rainbarf_segment() {
       ;;
   esac
 
-  if [[ "$rainbarf_toggle" != "1" ]] || ! command -v rainbarf >/dev/null 2>&1; then
+  if [[ "$rainbarf_toggle" != "1" ]]; then
     return 0
   fi
 
@@ -29,7 +64,7 @@ status_build_rainbarf_segment() {
     return 0
   fi
 
-  local cpu_busy alpha prev_ema cpu_ema metric_fg rainbarf_output
+  local cpu_busy alpha prev_ema cpu_ema metric_fg metric_bg cpu_text mem_text memory_percent
   cpu_busy=$(top -l 1 -n 0 2>/dev/null | awk -F'[:,% ]+' '/CPU usage/ {print $3; exit}')
   if [[ ! "$cpu_busy" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
     cpu_busy="0"
@@ -58,9 +93,19 @@ status_build_rainbarf_segment() {
     metric_fg="#6c7086"
   fi
 
-  rainbarf_output=$(rainbarf --tmux --width "$rainbarf_width" --no-battery --no-remaining --no-bolt --no-rgb --fg colour244 2>/dev/null || true)
-  rainbarf_output=${rainbarf_output//$'\n'/}
-  if [[ -n "$rainbarf_output" ]]; then
-    printf '#[fg=%s] %s #[default]' "$metric_fg" "$rainbarf_output"
+  metric_bg=$(tmux show -gqv '@tab_bg' 2>/dev/null || true)
+  [[ -z "$metric_bg" ]] && metric_bg="default"
+
+  memory_percent=$(status_memory_percent)
+  if [[ ! "$memory_percent" =~ ^[0-9]+$ ]]; then
+    memory_percent="0"
   fi
+
+  cpu_text=$(printf '󰍛 %d%%' "${cpu_ema%.*}")
+  mem_text=$(printf '󰘚 %d%%' "$memory_percent")
+  printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] %s  %s #[fg=%s,bg=%s]#[default]' \
+    "$metric_bg" "default" \
+    "$metric_fg" "$metric_bg" \
+    "$cpu_text" "$mem_text" \
+    "$metric_bg" "default"
 }

@@ -10,9 +10,10 @@ Internal implementation may be split into helpers, but the external behavior is 
 The right status is rendered as a single tmux status string with this segment order:
 
 1. session segment
-2. rainbarf / metrics segment
-3. time segment
-4. date segment
+2. optional Things segment
+3. metrics segment
+4. time segment
+5. date segment
 
 ## Stable compatibility points
 
@@ -27,9 +28,10 @@ The refactor preserves:
 - session-pill cutoff via `TMUX_SESSION_RIGHT_MIN_WIDTH`
 - session label truncation via `TMUX_SESSION_RIGHT_MAXLEN`
 - `TMUX_SESSION_ICONS` parsing
+- optional `TMUX_THINGS` / `TMUX_THINGS_*` segment gating and timing
 - `TMUX_RAINBARF` / `TMUX_RAINBARF_*` behavior
 - `@cpu_ema` as the smoothing state key
-- graceful degradation when `rainbarf` is missing
+- graceful degradation when Things AppleScript refresh fails
 
 ## Internal split targets
 
@@ -46,5 +48,8 @@ After changes, verify at least:
 - canonical name like `3__work` shows mapped icon + `work`
 - legacy name like `3-work` still parses
 - long session labels are truncated the same way
-- missing `rainbarf` removes only that segment
+- Things segment rotates cached Today titles every 30s by default
+- Things cache refreshes no more than once per 60s by default
+- empty Today cache renders `ALL DONE`
+- disabling metrics removes only that segment
 - `@cpu_ema` continues to update
