@@ -2,8 +2,15 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
-      -- remove clock section
       opts.sections = opts.sections or {}
+      opts.sections.lualine_a = {
+        {
+          "mode",
+          separator = { right = "" },
+        },
+      }
+
+      -- remove clock section
       opts.sections.lualine_z = {}
 
       -- only change the long statusline bar background (StatusLine), not lualine section colors

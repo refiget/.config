@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 
+status_build_pane_flag_segment() {
+  local status_bg="${1:-default}"
+  local pane_count pane_flag_fg pane_flag_bg
+
+  pane_count=$(tmux display-message -p '#{window_panes}' 2>/dev/null || true)
+  if [[ -z "${pane_count:-}" || ! "$pane_count" =~ ^[0-9]+$ || "$pane_count" -le 1 ]]; then
+    return 0
+  fi
+
+  pane_flag_fg=$(status_option_or '@pane_flag_fg' '#FFF4D6')
+  pane_flag_bg=$(status_option_or '@pane_flag_bg' '#6B4E2E')
+  printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] 󰕴 #[fg=%s,bg=%s]#[default] ' \
+    "$pane_flag_bg" "$status_bg" \
+    "$pane_flag_fg" "$pane_flag_bg" \
+    "$pane_flag_bg" "$status_bg"
+}
+
 status_build_session_segment() {
   local width="${1:-}"
   local subtext0="${2:-#a6adc8}"
@@ -81,7 +98,7 @@ status_build_time_segment() {
   time_value=$(date +"${TMUX_TIME_ONLY_FMT:-%H:%M}")
   time_fg=$(status_option_or '@time_fg' "$fallback_fg")
   time_bg=$(status_option_or '@time_bg' "$status_bg")
-  printf '#[fg=%s,bg=%s] %s #[default]' "$time_fg" "$time_bg" "$time_value"
+  printf '#[fg=%s,bg=%s]#[fg=%s,bg=%s] %s #[default]' "$time_bg" "$status_bg" "$time_fg" "$time_bg" "$time_value"
 }
 
 status_build_date_segment() {

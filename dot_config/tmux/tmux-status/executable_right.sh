@@ -28,6 +28,7 @@ peach="#fab387"
 # Keep segments on the terminal background to avoid color blocks on transparent themes
 segment_fg=$(status_option_or '@status_fg' "$overlay0")
 
+pane_flag_segment=$(status_build_pane_flag_segment "$status_bg")
 session_segment=$(status_build_session_segment "$width" "$subtext0")
 rainbarf_segment=$(status_build_rainbarf_segment "$width" "$segment_fg")
 time_segment=$(status_build_time_segment "$status_bg" "$subtext0")
@@ -35,6 +36,7 @@ date_segment=$(status_build_date_segment "$status_bg" "$subtext0")
 right_cap=""
 
 printf '%s%s%s%s%s' \
+  "$pane_flag_segment" \
   "$session_segment" \
   "$rainbarf_segment" \
   "$time_segment" \

@@ -10,3 +10,4 @@ vim.opt.clipboard = ""
 
 -- Faster CursorHold for diagnostic hover
 vim.o.updatetime = 300
+vim.opt.numberwidth = 4
