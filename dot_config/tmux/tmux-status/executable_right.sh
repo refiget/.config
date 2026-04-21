@@ -29,7 +29,7 @@ peach="#fab387"
 segment_fg=$(status_option_or '@status_fg' "$overlay0")
 
 pane_flag_segment=$(status_build_pane_flag_segment "$status_bg")
-session_segment=$(status_build_session_segment "$width" "$subtext0")
+session_segment=$(status_build_session_segment "$width" "$subtext0" "$status_bg")
 rainbarf_segment=$(status_build_rainbarf_segment "$width" "$segment_fg")
 time_segment=$(status_build_time_segment "$status_bg" "$subtext0")
 date_segment=$(status_build_date_segment "$status_bg" "$subtext0")

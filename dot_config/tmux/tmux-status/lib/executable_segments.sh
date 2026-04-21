@@ -20,6 +20,7 @@ status_build_pane_flag_segment() {
 status_build_session_segment() {
   local width="${1:-}"
   local subtext0="${2:-#a6adc8}"
+  local status_bg="${3:-default}"
 
   local show_session=1
   local session_min_width="${TMUX_SESSION_RIGHT_MIN_WIDTH:-105}"
@@ -84,7 +85,11 @@ status_build_session_segment() {
   fi
 
   if [[ -n "$session_bg" ]]; then
-    printf '#[fg=%s,bg=%s] %s %s #[default]' "$session_fg" "$session_bg" "$session_icon" "$session_name_clean"
+    printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] %s %s #[fg=%s,bg=%s]#[default] ' \
+      "$session_bg" "$status_bg" \
+      "$session_fg" "$session_bg" \
+      "$session_icon" "$session_name_clean" \
+      "$session_bg" "$status_bg"
   else
     printf '#[fg=%s] %s %s #[default]' "$session_fg" "$session_icon" "$session_name_clean"
   fi
