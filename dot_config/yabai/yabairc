@@ -4,8 +4,15 @@
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 sudo yabai --load-sa
 
-# Keep logs quiet
-yabai -m config debug_output off
+# winodw rule
+yabai -m rule --add app="^Safari$" space=web
+yabai -m rule --add app="^微信$" manage=off
+
+# signals
+yabai -m signal --add event=window_destroyed active=yes action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse &> /dev/null || yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id) &> /dev/null"
+yabai -m signal --add event=window_minimized active=yes action="if \$(yabai -m query --windows --window \$YABAI_WINDOW_ID | jq -r '.\"is-floating\"'); then yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse &> /dev/null || yabai -m window --focus \$(yabai -m query --windows --space | jq .[0].id) &> /dev/null; fi"
+
+yabai -m config --space social layout stack
 
 # Mouse behavior: click-to-focus only
 yabai -m config focus_follows_mouse off
@@ -18,7 +25,7 @@ yabai -m config bottom_padding 0
 yabai -m config left_padding 0
 yabai -m config right_padding 0
 yabai -m config window_gap 3
-# yabai -m config external_bar all:32:0
+yabai -m config external_bar all:32:0
 
 yabai -m config window_animation_duration 0.2
 yabai -m config window_animation_easing ease_out_circ
@@ -29,5 +36,4 @@ yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="^Installer$" manage=off
 yabai -m rule --add app="^Install macOS.*$" manage=off
-yabai -m rule --add app="^微信$" manage=off
 yabai -m rule --add app="^Clash Verge$" manage=off

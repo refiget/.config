@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+CONFIG_DIR="${HOME}/.config/sketchybar"
+export CONFIG_DIR
+
+exec /opt/homebrew/bin/lua "${CONFIG_DIR}/init.lua"
