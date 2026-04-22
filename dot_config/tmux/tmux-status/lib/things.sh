@@ -102,7 +102,7 @@ status_things_summary() {
     return 0
   fi
 
-  printf 'Today %s Active %s Done' "$open_count" "$done_count"
+  printf 'Today %s  󰛲' "$open_count"
 }
 
 status_build_things_segment() {
