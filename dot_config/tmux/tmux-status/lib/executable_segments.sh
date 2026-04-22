@@ -2,8 +2,6 @@
 
 status_build_session_segment() {
   local width="${1:-}"
-  local subtext0="${2:-#a6adc8}"
-  local status_bg="${3:-default}"
 
   local show_session=1
   local session_min_width="${TMUX_SESSION_RIGHT_MIN_WIDTH:-105}"
@@ -58,14 +56,11 @@ status_build_session_segment() {
     session_icon="$display_idx"
   fi
 
-  local session_fg session_bg pane_count pane_flag_bg max_slen
-  session_fg=$(status_option_or '@session_label_fg' "$subtext0")
-  session_bg=$(status_option_or '@session_label_bg' '')
-
+  local pane_count session_fg
   pane_count=$(tmux display-message -p '#{window_panes}' 2>/dev/null || true)
-  if [[ -n "$session_bg" && "$pane_count" =~ ^[0-9]+$ ]] && (( pane_count > 1 )); then
-    pane_flag_bg=$(status_option_or '@pane_flag_bg' '#6B4E2E')
-    session_bg="$pane_flag_bg"
+  session_fg="#6c7086"
+  if [[ "$pane_count" =~ ^[0-9]+$ ]] && (( pane_count > 1 )); then
+    session_fg=$(status_option_or '@pane_flag_fg' '#fab387')
   fi
 
   max_slen=${TMUX_SESSION_RIGHT_MAXLEN:-12}
@@ -73,34 +68,17 @@ status_build_session_segment() {
     session_name_clean="${session_name_clean:0:max_slen-1}…"
   fi
 
-  if [[ -n "$session_bg" ]]; then
-    printf ' #[fg=%s,bg=%s]#[fg=%s,bg=%s] %s %s #[default]' \
-      "$session_bg" "$status_bg" \
-      "$session_fg" "$session_bg" \
-      "$session_icon" "$session_name_clean"
-  else
-    printf '#[fg=%s] %s %s #[default]' "$session_fg" "$session_icon" "$session_name_clean"
-  fi
+  printf '#[italics,fg=%s] %s %s #[default]' "$session_fg" "$session_icon" "$session_name_clean"
 }
 
 status_build_time_segment() {
-  local status_bg="${1:-default}"
-  local fallback_fg="${2:-#a6adc8}"
-  local time_value time_fg time_bg
-
+  local time_value
   time_value=$(date +"${TMUX_TIME_ONLY_FMT:-%H:%M}")
-  time_fg=$(status_option_or '@time_fg' "$fallback_fg")
-  time_bg=$(status_option_or '@time_bg' "$status_bg")
-  printf '#[fg=%s,bg=%s] %s #[default]' "$time_fg" "$time_bg" "$time_value"
+  printf '#[italics,fg=#9399b2] %s #[default]' "$time_value"
 }
 
 status_build_date_segment() {
-  local status_bg="${1:-default}"
-  local fallback_fg="${2:-#a6adc8}"
-  local date_value date_fg date_bg
-
+  local date_value
   date_value=$(date +"${TMUX_DATE_ONLY_FMT:-%m-%d}")
-  date_fg=$(status_option_or '@date_fg' "$fallback_fg")
-  date_bg=$(status_option_or '@date_bg' "$status_bg")
-  printf '#[fg=%s,bg=%s] %s #[default]' "$date_fg" "$date_bg" "$date_value"
+  printf '#[italics,fg=#45475a] %s #[default]' "$date_value"
 }

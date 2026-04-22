@@ -29,23 +29,6 @@ status_escape_tmux_text() {
   printf '%s' "$text"
 }
 
-status_things_center_padding() {
-  local text="${1:-}"
-  local width="${2:-28}"
-  local total left right content_width
-
-  content_width=$((2 + ${#text}))
-  if [[ ! "$width" =~ ^[0-9]+$ ]] || (( width <= content_width )); then
-    printf '0,0'
-    return 0
-  fi
-
-  total=$((width - content_width))
-  left=$((total / 2))
-  right=$((total - left))
-  printf '%s,%s' "$left" "$right"
-}
-
 status_things_refresh_if_needed() {
   local refresh_sec="${TMUX_THINGS_REFRESH_SEC:-60}"
   local counts_file state_file lock_dir refresh_script now age mtime
@@ -107,8 +90,7 @@ status_things_summary() {
 
 status_build_things_segment() {
   local width="${1:-}"
-  local status_bg="${2:-default}"
-  local text_fg text_bg icon_fg text state_file state pad left_pad right_pad
+  local text state_file state
 
   if [[ "${TMUX_THINGS:-1}" != "1" ]]; then
     return 0
@@ -132,15 +114,6 @@ status_build_things_segment() {
   fi
 
   text=$(status_escape_tmux_text "$text")
-  pad=$(status_things_center_padding "$text" "${TMUX_THINGS_PILL_WIDTH:-28}")
-  left_pad=${pad%%,*}
-  right_pad=${pad#*,}
-  text_fg=$(status_option_or '@things_fg' '#F7FBFF')
-  icon_fg=$(status_option_or '@things_icon_fg' '#FFD400')
-  text_bg=$(status_option_or '@things_bg' '#18AEF8')
 
-  printf '#[fg=%s,bg=%s]%*s#[fg=%s,bg=%s]󰓎 #[fg=%s,bg=%s]%s%*s#[default]' \
-    "$text_fg" "$text_bg" "$left_pad" '' \
-    "$icon_fg" "$text_bg" \
-    "$text_fg" "$text_bg" "$text" "$right_pad" ''
+  printf '#[bold,italics,fg=#f9e2af]󰓎 %s#[default]' "$text"
 }

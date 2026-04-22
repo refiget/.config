@@ -11,3 +11,8 @@ vim.opt.clipboard = ""
 -- Faster CursorHold for diagnostic hover
 vim.o.updatetime = 300
 vim.opt.numberwidth = 4
+
+-- Enable line wrapping
+vim.opt.wrap = true
+vim.opt.linebreak = true -- Break at word boundaries
+vim.opt.breakindent = true -- Keep indentation when wrapping

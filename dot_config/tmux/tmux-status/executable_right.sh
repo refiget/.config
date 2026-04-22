@@ -17,19 +17,13 @@ if [[ -n "${width:-}" && "$width" =~ ^[0-9]+$ ]]; then
   fi
 fi
 
-status_bg=$(status_bg_value)
-
-subtext0="#a6adc8"
-
-session_segment=$(status_build_session_segment "$width" "$subtext0" "$status_bg")
-things_segment=$(status_build_things_segment "$width" "$status_bg")
-time_segment=$(status_build_time_segment "$status_bg" "$subtext0")
-date_segment=$(status_build_date_segment "$status_bg" "$subtext0")
+session_segment=$(status_build_session_segment "$width")
+things_segment=$(status_build_things_segment "$width")
+time_segment=$(status_build_time_segment)
 right_cap=""
 
-printf '%s%s%s%s%s' \
+printf '%s  %s  %s%s' \
   "$session_segment" \
   "$things_segment" \
   "$time_segment" \
-  "$date_segment" \
   "$right_cap"
