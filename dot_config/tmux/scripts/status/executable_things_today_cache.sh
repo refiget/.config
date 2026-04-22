@@ -10,8 +10,22 @@ state_file="$cache_dir/today_state"
 error_file="$cache_dir/today_error.log"
 lock_dir="$cache_dir/.refresh.lock"
 list_name="${TMUX_THINGS_LIST_NAME:-Today}"
+lock_stale_sec="${TMUX_THINGS_LOCK_STALE_SEC:-300}"
+
+if [[ ! "$lock_stale_sec" =~ ^[0-9]+$ ]] || (( lock_stale_sec <= 0 )); then
+  lock_stale_sec=300
+fi
 
 mkdir -p "$cache_dir"
+
+if [[ -d "$lock_dir" ]]; then
+  lock_mtime=$(stat -f '%m' "$lock_dir" 2>/dev/null || echo 0)
+  now=$(date +%s)
+  lock_age=$((now - lock_mtime))
+  if (( lock_mtime == 0 )) || (( lock_age >= lock_stale_sec )); then
+    rmdir "$lock_dir" 2>/dev/null || true
+  fi
+fi
 
 if ! mkdir "$lock_dir" 2>/dev/null; then
   exit 0
