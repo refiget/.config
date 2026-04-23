@@ -3,4 +3,4 @@
 CONFIG_DIR="${HOME}/.config/sketchybar"
 export CONFIG_DIR
 
-exec /opt/homebrew/bin/lua "${CONFIG_DIR}/init.lua"
+exec /opt/homebrew/opt/lua@5.4/bin/lua "${CONFIG_DIR}/init.lua"

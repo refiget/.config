@@ -64,5 +64,4 @@ return function(sbar, config)
     script = config.scripts.input_source,
   })
 
-  input_source:subscribe("system_woke")
 end
