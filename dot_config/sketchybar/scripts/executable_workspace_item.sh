@@ -34,7 +34,7 @@ if [[ "$SENDER" == "space_windows_change" && -n "$INFO" ]]; then
   fi
 fi
 if [[ -z "$WINDOW_APPS" ]]; then
-  WINDOW_APPS="$(yabai -m query --windows --space "$SID" 2>/dev/null | jq -r 'map(select(."is-minimized" == false)) | .[].app' 2>/dev/null)"
+  WINDOW_APPS="$(yabai -m query --windows --space "$SID" 2>/dev/null | jq -r 'map(select(."is-minimized" == false)) | .[].app' 2>/dev/null | awk '!a[$0]++')"
 fi
 
 if [[ -n "$WINDOW_APPS" && -x "$ICON_MAP_SCRIPT" ]]; then
