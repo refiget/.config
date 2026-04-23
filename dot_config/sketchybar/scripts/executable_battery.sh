@@ -4,35 +4,40 @@ PERCENTAGE="$(pmset -g batt | grep -Eo '[0-9]+%' | cut -d% -f1)"
 CHARGING="$(pmset -g batt | grep 'AC Power')"
 
 if [ -z "$PERCENTAGE" ]; then
-  exit 0
-fi
-
-case "${PERCENTAGE}" in
-[8-9][0-9] | 100)
-  ICON=""
+  # No battery detected (desktop or battery removed)
+  ICON="󰇄"
   ICON_COLOR=0xffa6da95
-  ;;
-7[0-9])
-  ICON=""
-  ICON_COLOR=0xffeed49f
-  ;;
-[4-6][0-9])
-  ICON=""
-  ICON_COLOR=0xfff5a97f
-  ;;
-[1-3][0-9])
-  ICON=""
-  ICON_COLOR=0xffee99a0
-  ;;
-[0-9])
-  ICON=""
-  ICON_COLOR=0xffed8796
-  ;;
-esac
+  LABEL=""
+else
+  case "${PERCENTAGE}" in
+  [8-9][0-9] | 100)
+    ICON=""
+    ICON_COLOR=0xffa6da95
+    ;;
+  7[0-9])
+    ICON=""
+    ICON_COLOR=0xffeed49f
+    ;;
+  [4-6][0-9])
+    ICON=""
+    ICON_COLOR=0xfff5a97f
+    ;;
+  [1-3][0-9])
+    ICON=""
+    ICON_COLOR=0xffee99a0
+    ;;
+  [0-9])
+    ICON=""
+    ICON_COLOR=0xffed8796
+    ;;
+  esac
 
-if [ -n "$CHARGING" ]; then
-  ICON=""
-  ICON_COLOR=0xffeed49f
+  if [ -n "$CHARGING" ]; then
+    ICON=""
+    ICON_COLOR=0xffeed49f
+  fi
+  
+  LABEL="${PERCENTAGE}%"
 fi
 
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%" icon.color="${ICON_COLOR}"
+sketchybar --set "$NAME" icon="$ICON" label="$LABEL" icon.color="${ICON_COLOR}"
