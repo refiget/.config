@@ -7,6 +7,7 @@ return function(sbar, config, host)
     position = "right",
     background = item_config.clock.background,
     icon = item_config.clock.icon,
+    label = { color = 0xffffffff },
     update_freq = 10,
     script = config.scripts.clock,
   })

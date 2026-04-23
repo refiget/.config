@@ -67,18 +67,6 @@ return {
         },
       },
       items = {
-        front_app = {
-          icon = { y_offset = 1, color = 0xff24273a },
-          separator = {
-            background_padding_left = -3,
-            font = font_face .. ":Bold:18.0",
-          },
-          name = {
-            font = font_face .. ":Bold:18.0",
-            color = nil,
-            padding_left = nil,
-          },
-        },
         clock = {
           icon = { string = "󰃰", color = 0xffed8796 },
         },
@@ -114,18 +102,6 @@ return {
         },
       },
       items = {
-        front_app = {
-          icon = { y_offset = 1, color = nil },
-          separator = {
-            background_padding_left = 0,
-            font = font_face .. ":Bold:18.0",
-          },
-          name = {
-            font = font_face .. ":Bold:18.0",
-            color = 0xffcad3f5,
-            padding_left = 5,
-          },
-        },
         clock = {
           background = { color = 0xffed8796 },
           icon = { string = "󰃰" },

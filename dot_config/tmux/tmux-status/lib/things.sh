@@ -17,7 +17,8 @@ status_things_lock_dir() {
 }
 
 status_things_refresh_script() {
-  printf '%s/scripts/status/things_today_cache.sh' "$status_repo_root"
+  local repo_root="${TMUX_STATUS_ROOT:-$HOME/.config/tmux}"
+  printf '%s/scripts/status/things_today_cache.sh' "$repo_root"
 }
 
 status_escape_tmux_text() {

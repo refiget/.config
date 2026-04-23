@@ -7,16 +7,31 @@ TITLES_FILE="$CACHE_DIR/today_titles"
 STATE_FILE="$CACHE_DIR/today_state"
 LOCK_DIR="$CACHE_DIR/.refresh.lock"
 REFRESH_SCRIPT="$HOME/.config/tmux/scripts/status/things_today_cache.sh"
+
+# The refresh script now populates these cache files via `things.py`.
 REFRESH_SEC="${TMUX_THINGS_REFRESH_SEC:-60}"
 LOCK_STALE_SEC="${TMUX_THINGS_LOCK_STALE_SEC:-300}"
 MAX_CHARS="${SKETCHYBAR_THINGS_MAX_CHARS:-25}"
 ROTATE_SEC="${SKETCHYBAR_THINGS_ROTATE_SEC:-30}"
+
+# Validate numeric parameters
 if [[ ! "$ROTATE_SEC" =~ ^[0-9]+$ ]] || (( ROTATE_SEC <= 0 )); then
   ROTATE_SEC=30
 fi
 if [[ ! "$LOCK_STALE_SEC" =~ ^[0-9]+$ ]] || (( LOCK_STALE_SEC <= 0 )); then
   LOCK_STALE_SEC=300
 fi
+if [[ ! "$REFRESH_SEC" =~ ^[0-9]+$ ]] || (( REFRESH_SEC <= 0 )); then
+  REFRESH_SEC=60
+fi
+if [[ ! "$MAX_CHARS" =~ ^[0-9]+$ ]] || (( MAX_CHARS <= 0 )); then
+  MAX_CHARS=25
+fi
+
+# Ensure cache directory exists
+[[ -d "$CACHE_DIR" ]] || mkdir -p "$CACHE_DIR" 2>/dev/null || true
+
+NOW=$(date +%s)
 
 clear_stale_lock() {
   local now lock_mtime lock_age
@@ -43,6 +58,11 @@ refresh_if_needed() {
 
   clear_stale_lock
 
+  # If REFRESH_SCRIPT is already running, don't pile up concurrent refreshes
+  if [[ -d "$LOCK_DIR" ]]; then
+    return 0
+  fi
+
   if [[ -f "$COUNTS_FILE" ]]; then
     mtime=$(stat -f '%m' "$COUNTS_FILE" 2>/dev/null || echo 0)
   elif [[ -f "$STATE_FILE" ]]; then
@@ -55,11 +75,11 @@ refresh_if_needed() {
   age=$((now - mtime))
 
   if (( mtime == 0 )); then
-    "$REFRESH_SCRIPT" >/dev/null 2>&1 || true
+    "$REFRESH_SCRIPT" >/dev/null 2>&1 &
     return 0
   fi
 
-  if (( age < REFRESH_SEC )) || [[ -d "$LOCK_DIR" ]]; then
+  if (( age < REFRESH_SEC )); then
     return 0
   fi
 
@@ -73,10 +93,16 @@ truncate_title() {
   text="${text//$'\r'/ }"
   text="${text//$'\n'/ }"
   text="${text//$'\t'/ }"
+  text="${text//\"/\\\"}"
   text="$(printf '%s' "$text" | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//')"
 
   if [[ -z "$text" ]]; then
     printf ''
+    return 0
+  fi
+
+  if (( limit <= 0 )); then
+    printf '...'
     return 0
   fi
 
@@ -88,77 +114,58 @@ truncate_title() {
   printf '%s...' "${text:0:$limit}"
 }
 
-label_from_counts() {
-  local raw open_count done_count
-
-  if [[ ! -f "$COUNTS_FILE" ]]; then
-    printf '...'
-    return 0
-  fi
-
-  raw="$(<"$COUNTS_FILE")"
-  open_count="${raw%%,*}"
-  done_count="${raw#*,}"
-
-  if [[ "$open_count" =~ ^[0-9]+$ ]] && [[ "$done_count" =~ ^[0-9]+$ ]]; then
-    if (( open_count == 0 && done_count == 0 )); then
-      printf 'ALL DONE'
-    elif (( open_count > 0 )); then
-      printf '%s' "$open_count"
-    else
-      printf 'ALL DONE'
-    fi
-  else
-    printf 'THINGS ERR'
-  fi
-}
+# Pre-compute data file age to throttle refresh frequency
+data_mtime=0
+if [[ -f "$COUNTS_FILE" ]]; then
+  data_mtime=$(stat -f '%m' "$COUNTS_FILE" 2>/dev/null || echo 0)
+elif [[ -f "$STATE_FILE" ]]; then
+  data_mtime=$(stat -f '%m' "$STATE_FILE" 2>/dev/null || echo 0)
+fi
+data_age=$(( NOW - data_mtime ))
+(( data_age < 0 )) && data_age=0
 
 SHOULD_REFRESH=0
 
 state=""
-[[ -f "$STATE_FILE" ]] && state="$(<"$STATE_FILE")"
+if [[ -f "$STATE_FILE" ]]; then
+  read -r state < "$STATE_FILE" 2>/dev/null || state=""
+fi
 
 if [[ "$state" == "error" ]]; then
   LABEL="THINGS ERR"
   SHOULD_REFRESH=1
-elif [[ -f "$TITLES_FILE" ]] && [[ -n "$(<"$TITLES_FILE")" ]]; then
+elif [[ -f "$TITLES_FILE" ]] && [[ -s "$TITLES_FILE" ]]; then
   TITLES=()
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n "$line" ]]; do
     [[ -z "${line//[[:space:]]/}" ]] && continue
     TITLES+=("$line")
   done < "$TITLES_FILE"
 
   if (( ${#TITLES[@]} > 0 )); then
-    INDEX=$(( (($(date +%s) / ROTATE_SEC) % ${#TITLES[@]}) + 1 ))
+    INDEX=$(( ((NOW / ROTATE_SEC) % ${#TITLES[@]}) + 1 ))
     TITLE="${TITLES[$INDEX]}"
     LABEL="$(truncate_title "$TITLE" "$MAX_CHARS")"
-    if (( INDEX == ${#TITLES[@]} )); then
+    if (( INDEX == ${#TITLES[@]} )) && (( data_mtime == 0 || data_age >= REFRESH_SEC )); then
       SHOULD_REFRESH=1
     fi
-    if [[ -z "${LABEL//[[:space:]]/}" ]]; then
-      LABEL="$(label_from_counts)"
-    fi
   else
-    LABEL="$(label_from_counts)"
+    LABEL="ALL DONE !"
     SHOULD_REFRESH=1
   fi
-elif [[ -f "$TITLE_FILE" ]] && [[ -n "$(<"$TITLE_FILE")" ]]; then
+elif [[ -f "$TITLE_FILE" ]] && [[ -s "$TITLE_FILE" ]]; then
   TITLE="$(<"$TITLE_FILE")"
   LABEL="$(truncate_title "$TITLE" "$MAX_CHARS")"
   SHOULD_REFRESH=1
-  if [[ -z "${LABEL//[[:space:]]/}" ]]; then
-    LABEL="$(label_from_counts)"
-  fi
 elif [[ -f "$COUNTS_FILE" ]]; then
-  LABEL="$(label_from_counts)"
+  LABEL="ALL DONE !"
   SHOULD_REFRESH=1
 else
-  LABEL="..."
+  LABEL="ALL DONE !"
   SHOULD_REFRESH=1
 fi
 
 if [[ -z "${LABEL//[[:space:]]/}" ]]; then
-  LABEL="..."
+  LABEL="ALL DONE !"
 fi
 
 sketchybar --set "$NAME" label="$LABEL"

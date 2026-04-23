@@ -1,13 +1,13 @@
 return function(sbar, config)
-  sbar.add("item", "things.calendar", {
+  sbar.add("item", "things_right_icon", {
     position = "e",
     background = {
       color = 0x667dc4e4,
-      padding_left = -1,
+      padding_left = 2,
     },
     icon = {
-      color = 0xfff9e2af,
-      string = "󰓎",
+      color = 0xffffd700,
+      string = "",
       font = "JetBrainsMono Nerd Font:Bold:18.0",
       padding_left = 3,
       padding_right = 4,
@@ -15,7 +15,7 @@ return function(sbar, config)
     label = { drawing = false },
   })
 
-  sbar.add("item", "things.today", {
+  sbar.add("item", "things_right_today", {
     position = "e",
     background = {
       drawing = true,
@@ -34,7 +34,7 @@ return function(sbar, config)
     },
     label = {
       string = "Today · TODO标题…",
-      color = 0xffcad3f5,
+      color = 0xffffffff,
       font = "JetBrainsMono Nerd Font:Bold:18.0",
       padding_left = 0,
       padding_right = 6,
@@ -43,8 +43,12 @@ return function(sbar, config)
     script = config.scripts.things_today,
   })
 
+  sbar.exec("sketchybar --move things_left_app before things_right_icon")
+  sbar.exec("sketchybar --move things_right_icon before things_right_today")
+
   sbar.add("item", "battery", {
     position = "right",
+    label = { color = 0xffffffff },
     update_freq = 20,
     script = config.scripts.battery,
   })
@@ -55,7 +59,7 @@ return function(sbar, config)
       string = "󰗊",
       color = 0xff8aadf4,
     },
-    label = { drawing = true },
+    label = { drawing = true, color = 0xffffffff },
     update_freq = 2,
     script = config.scripts.input_source,
   })

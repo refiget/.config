@@ -25,7 +25,7 @@ yabai -m config bottom_padding 0
 yabai -m config left_padding 0
 yabai -m config right_padding 0
 yabai -m config window_gap 3
-yabai -m config external_bar all:32:0
+yabai -m config external_bar all:35:0
 
 yabai -m config window_animation_duration 0.2
 yabai -m config window_animation_easing ease_out_circ

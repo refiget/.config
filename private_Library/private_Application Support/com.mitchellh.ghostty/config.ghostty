@@ -2,7 +2,7 @@ font-family = JetBrainsMono Nerd Font
 font-family = Maple Mono NF CN
 font-size = 18
 font-feature = liga
-macos-icon = glass            
+macos-icon = blueprint           
 
 # kitty current-theme.conf -> Ghostty
 theme = TokyoNight Storm

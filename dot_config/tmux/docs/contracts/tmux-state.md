@@ -19,7 +19,7 @@ This document records tmux option/environment state used internally by this repo
 | `TMUX_MODE` | user/session/global env | repo-public config | mode-aware color selection |
 | `TMUX_THEME_PRESET` | user/session/global env | repo-public config | preset selection |
 | `TMUX_SESSION_ICONS` | `conf.d/08_toggle_theme.conf` | repo-public config | comma-separated session icon mapping |
-| `TMUX_THINGS`, `TMUX_THINGS_MIN_WIDTH`, `TMUX_THINGS_REFRESH_SEC`, `TMUX_THINGS_LIST_NAME` | `conf.d/08_toggle_theme.conf` | repo-public config | Things segment behavior |
+| `TMUX_THINGS`, `TMUX_THINGS_MIN_WIDTH`, `TMUX_THINGS_REFRESH_SEC` | `conf.d/08_toggle_theme.conf` | repo-public config | Things segment behavior |
 | `TMUX_RIGHT_MIN_WIDTH` | env | repo-public config | whole right-status cutoff |
 | `TMUX_SESSION_RIGHT_MIN_WIDTH` | env | repo-public config | session segment cutoff |
 | `TMUX_SESSION_RIGHT_MAXLEN` | env | repo-public config | session label truncation |
