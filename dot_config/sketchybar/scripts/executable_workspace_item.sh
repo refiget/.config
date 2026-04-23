@@ -46,7 +46,7 @@ else
   ICON_STRIP=""
 fi
 
-sketchybar --set "$NAME" \
+sketchybar --animate sin 5 --set "$NAME" \
   background.color="$BG_COLOR" \
   background.border_width="$BORDER_WIDTH" \
   label="$ICON_STRIP" \
