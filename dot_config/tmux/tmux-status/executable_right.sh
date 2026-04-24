@@ -20,10 +20,13 @@ fi
 session_segment=$(status_build_session_segment "$width")
 things_segment=$(status_build_things_segment "$width")
 time_segment=$(status_build_time_segment)
+balance_raw="$(tmux show-option -gqv @opencode_balance_item 2>/dev/null || printf '$00.00')"
+balance_segment="#[fg=#ffffff,bold,italics]${balance_raw}#[default]"
 right_cap=""
 
-printf '%s  %s  %s%s' \
+printf '%s  %s  %s  %s%s' \
   "$session_segment" \
+  "$balance_segment" \
   "$things_segment" \
   "$time_segment" \
   "$right_cap"
