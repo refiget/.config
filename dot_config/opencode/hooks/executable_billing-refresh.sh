@@ -3,13 +3,16 @@
 set -u
 
 REFRESH_EVERY="${REFRESH_EVERY:-600}"
-STAMP_FILE="/tmp/n1n_billing_refresh_stamp"
-LOCK_DIR="/tmp/n1n_billing_refresh.lock"
+OPENCODE_CACHE_DIR="${OPENCODE_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/opencode}"
+STAMP_FILE="${OPENCODE_CACHE_DIR}/n1n_billing_refresh_stamp"
+LOCK_DIR="${OPENCODE_CACHE_DIR}/n1n_billing_refresh.lock"
 MONITOR="${HOME}/.config/opencode/hooks/provider-monitor.sh"
 
 # Hardcoded target for periodic refresh. Keep consistent with provider-monitor allowlist.
 TARGET_PROVIDER="n1n_relay"
 TARGET_MODEL="claude-haiku-4-5"
+
+mkdir -p "$OPENCODE_CACHE_DIR" 2>/dev/null || exit 0
 
 now="$(date +%s)"
 last=0

@@ -2,15 +2,18 @@
 
 set -u
 
-STATE_FILE="/tmp/opencode_provider_state.json"
-BALANCE_CACHE_FILE="/tmp/n1n_balance.json"
-DAILY_CACHE_FILE="/tmp/n1n_daily_usage.json"
-LOCK_DIR="/tmp/n1n_balance.lock"
+OPENCODE_CACHE_DIR="${OPENCODE_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/opencode}"
+STATE_FILE="${OPENCODE_CACHE_DIR}/opencode_provider_state.json"
+BALANCE_CACHE_FILE="${OPENCODE_CACHE_DIR}/n1n_balance.json"
+DAILY_CACHE_FILE="${OPENCODE_CACHE_DIR}/n1n_daily_usage.json"
+LOCK_DIR="${OPENCODE_CACHE_DIR}/n1n_balance.lock"
 LOCK_STALE_SECONDS="${LOCK_STALE_SECONDS:-30}"
 CACHE_TTL="${CACHE_TTL:-0}"
 SIGNAL_HANDLER="${HOME}/.config/opencode/hooks/opencode-signal.sh"
 TARGET_PROVIDERS=("n1n_relay")
 TARGET_MODELS=("claude-sonnet-4-6" "claude-haiku-4-5")
+
+mkdir -p "$OPENCODE_CACHE_DIR" 2>/dev/null || exit 0
 
 event="${OPENCODE_EVENT:-}"
 provider="${OPENCODE_PROVIDER:-${PROVIDER:-${OPENCODE_PROVIDER_ID:-${PROVIDER_ID:-}}}}"
@@ -34,6 +37,15 @@ lookup_display() {
     claude-sonnet-4-6) printf '%s\n' "Claude Sonnet 4.6" ;;
     claude-haiku-4-5) printf '%s\n' "Claude Haiku 4.5" ;;
     *) printf '%s\n' "$1" ;;
+  esac
+}
+
+log_session_match_pattern() {
+  local sid="$1"
+  case "$2" in
+    session_id) printf 'sessionID=%s|session\.id=%s\n' "$sid" "$sid" ;;
+    provider) printf 'providerID=n1n_relay .*sessionID=%s|providerID=n1n_relay .*session\.id=%s\n' "$sid" "$sid" ;;
+    *) return 1 ;;
   esac
 }
 
@@ -182,10 +194,15 @@ resolve_from_logs() {
   command -v rg >/dev/null 2>&1 || return 1
   command -v awk >/dev/null 2>&1 || return 1
 
-  local line
-  line="$(rg --no-filename "service=llm .*providerID=n1n_relay .*session\\.id=${sid}" "${HOME}/.local/share/opencode/log/"*.log 2>/dev/null | tail -n 1)"
+  local line logs_dir pattern
+  logs_dir="${HOME}/.local/share/opencode/log"
+  [ -d "$logs_dir" ] || return 1
+
+  pattern="$(log_session_match_pattern "$sid" provider)" || return 1
+  line="$(rg --no-filename "service=llm .*(${pattern})" "${logs_dir}/"*.log 2>/dev/null | tail -n 1)"
   if [ -z "$line" ]; then
-    line="$(rg --no-filename "service=llm .*session\\.id=${sid}" "${HOME}/.local/share/opencode/log/"*.log 2>/dev/null | tail -n 1)"
+    pattern="$(log_session_match_pattern "$sid" session_id)" || return 1
+    line="$(rg --no-filename "service=llm .*(${pattern})" "${logs_dir}/"*.log 2>/dev/null | tail -n 1)"
   fi
   [ -n "$line" ] || return 1
 

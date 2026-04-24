@@ -3,8 +3,11 @@
 set -u
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-LAST_ACTIVE_FILE="/tmp/opencode_provider_last_active"
+OPENCODE_CACHE_DIR="${OPENCODE_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/opencode}"
+LAST_ACTIVE_FILE="${OPENCODE_CACHE_DIR}/opencode_provider_last_active"
 IDLE_THRESHOLD="${IDLE_THRESHOLD:-60}"
+
+mkdir -p "$OPENCODE_CACHE_DIR" 2>/dev/null || true
 now="$(date +%s)"
 last_active=0
 

@@ -17,8 +17,10 @@ width=$(status_client_width)
 session_segment=$(status_build_session_segment "$width")
 time_segment=$(status_build_time_segment)
 billing_raw='$00.00'
-balance_cache="/tmp/n1n_balance.json"
-daily_cache="/tmp/n1n_daily_usage.json"
+opencode_cache_dir="${OPENCODE_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/opencode}"
+mkdir -p "$opencode_cache_dir" >/dev/null 2>&1 || true
+balance_cache="${opencode_cache_dir}/n1n_balance.json"
+daily_cache="${opencode_cache_dir}/n1n_daily_usage.json"
 daily_raw='-$0.00 [0]'
 if command -v jq >/dev/null 2>&1 && [[ -r "$balance_cache" ]]; then
   usage_raw="$(jq -r '.usage // empty' "$balance_cache" 2>/dev/null | head -n 1)"
