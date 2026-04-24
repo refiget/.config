@@ -3,15 +3,6 @@
 status_build_session_segment() {
   local width="${1:-}"
 
-  local show_session=1
-  local session_min_width="${TMUX_SESSION_RIGHT_MIN_WIDTH:-105}"
-  if [[ -n "${width:-}" && "$width" =~ ^[0-9]+$ ]] && (( width < session_min_width )); then
-    show_session=0
-  fi
-  if (( show_session != 1 )); then
-    return 0
-  fi
-
   local current_session_name session_name_clean session_idx
   current_session_name=$(tmux display-message -p '#{session_name}' 2>/dev/null || true)
   session_name_clean="$current_session_name"

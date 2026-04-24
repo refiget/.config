@@ -97,10 +97,6 @@ status_build_things_segment() {
     return 0
   fi
 
-  if [[ -n "${width:-}" && "$width" =~ ^[0-9]+$ ]] && (( width < ${TMUX_THINGS_MIN_WIDTH:-130} )); then
-    return 0
-  fi
-
   status_things_refresh_if_needed
 
   if ! text=$(status_things_summary 2>/dev/null); then

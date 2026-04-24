@@ -8,12 +8,8 @@
     "external_directory": "allow",
   },
   "agent": {
-    "plan": {
-      "model": "openai/gpt-5.3-codex"
-    },
-    "build": {
-      "model": "openai/gpt-5.3-codex"
-    }
+    "plan": {},
+    "build": {}
   },
   "mcp": {
     "brave": {
@@ -88,6 +84,7 @@
     },
   },
   "plugin": [
-    "opencode-kimi-full"
+    "opencode-kimi-full",
+    "/Users/mac/.config/opencode/plugins/opencode-tmux-bridge"
   ]
 }

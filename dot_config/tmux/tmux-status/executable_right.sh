@@ -9,24 +9,44 @@ source "$script_dir/lib/segments.sh"
 # shellcheck source=lib/things.sh
 source "$script_dir/lib/things.sh"
 
-min_width=${TMUX_RIGHT_MIN_WIDTH:-90}
+REFRESH_SCRIPT="${HOME}/.config/opencode/hooks/billing-refresh.sh"
+"$REFRESH_SCRIPT" >/dev/null 2>&1 &
+
 width=$(status_client_width)
-if [[ -n "${width:-}" && "$width" =~ ^[0-9]+$ ]]; then
-  if (( width < min_width )); then
-    exit 0
-  fi
-fi
 
 session_segment=$(status_build_session_segment "$width")
-things_segment=$(status_build_things_segment "$width")
 time_segment=$(status_build_time_segment)
-balance_raw="$(tmux show-option -gqv @opencode_balance_item 2>/dev/null || printf '$00.00')"
-balance_segment="#[fg=#ffffff,bold,italics]${balance_raw}#[default]"
+billing_raw='$00.00'
+balance_cache="/tmp/n1n_balance.json"
+daily_cache="/tmp/n1n_daily_usage.json"
+daily_raw='-$0.00 [0]'
+if command -v jq >/dev/null 2>&1 && [[ -r "$balance_cache" ]]; then
+  usage_raw="$(jq -r '.usage // empty' "$balance_cache" 2>/dev/null | head -n 1)"
+  if [[ -n "${usage_raw:-}" ]]; then
+    usage_fmt="$(awk -v u="$usage_raw" 'BEGIN { printf "%.2f", u / 100 }' 2>/dev/null)"
+    if [[ -n "${usage_fmt:-}" ]]; then
+      billing_raw="\$${usage_fmt}"
+    fi
+  fi
+fi
+if command -v jq >/dev/null 2>&1 && [[ -r "$daily_cache" ]]; then
+  daily_spent_raw="$(jq -r '.spent_today // empty' "$daily_cache" 2>/dev/null | head -n 1)"
+  daily_count_raw="$(jq -r '.count // empty' "$daily_cache" 2>/dev/null | head -n 1)"
+  if [[ -n "${daily_spent_raw:-}" ]]; then
+    daily_spent_fmt="$(awk -v u="$daily_spent_raw" 'BEGIN { printf "%.2f", u / 100 }' 2>/dev/null)"
+    if [[ -n "${daily_spent_fmt:-}" ]]; then
+      daily_count_raw="${daily_count_raw:-0}"
+      daily_raw="-\$${daily_spent_fmt} [${daily_count_raw}]"
+    fi
+  fi
+fi
+billing_segment="#[fg=#ffffff,bold,italics]${billing_raw}#[default]"
+extra_segment="#[fg=#f2a6a6,bold,italics]${daily_raw}#[default]"
 right_cap=""
 
 printf '%s  %s  %s  %s%s' \
   "$session_segment" \
-  "$balance_segment" \
-  "$things_segment" \
+  "$billing_segment" \
+  "$extra_segment" \
   "$time_segment" \
   "$right_cap"
