@@ -59,17 +59,17 @@ status_build_session_segment() {
     session_name_clean="${session_name_clean:0:max_slen-1}…"
   fi
 
-  printf '#[italics,fg=%s] %s %s #[default]' "$session_fg" "$session_icon" "$session_name_clean"
+  printf '#[fg=%s] %s %s #[default]' "$session_fg" "$session_icon" "$session_name_clean"
 }
 
 status_build_time_segment() {
   local time_value
   time_value=$(date +"${TMUX_TIME_ONLY_FMT:-%H:%M}")
-  printf '#[italics,fg=#9399b2] %s #[default]' "$time_value"
+  printf '#[fg=#9399b2] %s #[default]' "$time_value"
 }
 
 status_build_date_segment() {
   local date_value
   date_value=$(date +"${TMUX_DATE_ONLY_FMT:-%m-%d}")
-  printf '#[italics,fg=#45475a] %s #[default]' "$date_value"
+  printf '#[fg=#45475a] %s #[default]' "$date_value"
 }

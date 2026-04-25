@@ -42,8 +42,8 @@ if command -v jq >/dev/null 2>&1 && [[ -r "$daily_cache" ]]; then
     fi
   fi
 fi
-billing_segment="#[fg=#ffffff,bold,italics]${billing_raw}#[default]"
-extra_segment="#[fg=#f2a6a6,bold,italics]${daily_raw}#[default]"
+billing_segment="#[fg=#ffffff,bold]${billing_raw}#[default]"
+extra_segment="#[fg=#f2a6a6,bold]${daily_raw}#[default]"
 right_cap=""
 
 printf '%s  %s  %s  %s%s' \

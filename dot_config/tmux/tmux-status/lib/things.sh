@@ -112,5 +112,5 @@ status_build_things_segment() {
 
   text=$(status_escape_tmux_text "$text")
 
-  printf '#[bold,italics,fg=#f9e2af]󰓎 %s#[default]' "$text"
+  printf '#[bold,fg=#f9e2af]󰓎 %s#[default]' "$text"
 }
