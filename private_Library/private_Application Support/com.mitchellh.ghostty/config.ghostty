@@ -15,7 +15,7 @@ window-padding-x = 10
 window-padding-y = 10
 scrollback-limit = 10000
 bell-features = no-system,no-audio
-cursor-style = bar
+cursor-style = underline
 cursor-style-blink = false
 macos-titlebar-style = hidden
 

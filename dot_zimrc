@@ -25,4 +25,4 @@ zmodule Aloxaf/fzf-tab
 
 # Prompt theme (load last)
 # Pure prompt (external). Needs async + pure sourced.
-zmodule sindresorhus/pure --name prompt-pure --source async.zsh --source pure.zsh
+zmodule minimal
