@@ -16,3 +16,6 @@ vim.opt.numberwidth = 4
 vim.opt.wrap = true
 vim.opt.linebreak = true -- Break at word boundaries
 vim.opt.breakindent = true -- Keep indentation when wrapping
+
+-- Keep 5 context lines above/below cursor while scrolling
+vim.opt.scrolloff = 5
