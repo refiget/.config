@@ -1,19 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true,
-  "permission": {
-    "edit": "allow",
-    "bash": "allow",
-    "webfetch": "allow",
-    "external_directory": "allow",
-  },
   "agent": {
-    "plan": {},
-    "build": {}
+    "build": {},
+    "plan": {}
   },
+  "autoupdate": true,
   "mcp": {
     "brave": {
-      "type": "local",
       "command": [
         "npx",
         "-y",
@@ -22,52 +15,35 @@
         "stdio"
       ],
       "enabled": true,
-      "timeout": 120000,
       "environment": {
         "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
-      }
-    }
+      },
+      "timeout": 120000,
+      "type": "local"
+    },
   },
+  "permission": {
+    "bash": "allow",
+    "edit": "allow",
+    "external_directory": "allow",
+    "webfetch": "allow"
+  },
+  "plugin": [
+    "opencode-kimi-full",
+    "{env:HOME}/.config/opencode/plugins/opencode-tmux-bridge"
+  ],
   "provider": {
-    "n1n_relay": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "N1N Relay",
-      "options": {
-        "baseURL": "{env:N1N_RELAY_BASE_URL}/v1",
-        "apiKey": "{env:N1N_RELAY_API_KEY}"
-      },
-      "models": {
-        "claude-sonnet-4-6": {
-          "name": "Claude Sonnet 4.6"
-        },
-        "claude-haiku-4-5-20251001": {
-          "name": "Claude Haiku 4.5"
-        }
-      }
-    },
-    "moonshotai-cn": {
-      "models": {
-        "kimi-k2.5": {},
-        "kimi-k2-thinking": {},
-        "kimi-k2-turbo-preview": {}
-      }
-    },
     "kimi-for-coding-oauth": {
-      "name": "Kimi For Coding (OAuth)",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "https://api.kimi.com/coding/v1"
-      },
       "models": {
         "kimi-for-coding": {
           "name": "Kimi For Coding",
           "reasoning": true,
           "variants": {
-            "off": {
-              "reasoning_effort": "off"
-            },
             "auto": {
               "reasoning_effort": "auto"
+            },
+            "high": {
+              "reasoning_effort": "high"
             },
             "low": {
               "reasoning_effort": "low"
@@ -75,16 +51,40 @@
             "medium": {
               "reasoning_effort": "medium"
             },
-            "high": {
-              "reasoning_effort": "high"
+            "off": {
+              "reasoning_effort": "off"
             }
           }
         }
+      },
+      "name": "Kimi For Coding (OAuth)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://api.kimi.com/coding/v1"
       }
     },
-  },
-  "plugin": [
-    "opencode-kimi-full",
-    "{env:HOME}/.config/opencode/plugins/opencode-tmux-bridge"
-  ]
+    "moonshotai-cn": {
+      "models": {
+        "kimi-k2-thinking": {},
+        "kimi-k2-turbo-preview": {},
+        "kimi-k2.5": {}
+      }
+    },
+    "n1n_relay": {
+      "models": {
+        "claude-haiku-4-5-20251001": {
+          "name": "Claude Haiku 4.5"
+        },
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6"
+        }
+      },
+      "name": "N1N Relay",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "{env:N1N_RELAY_API_KEY}",
+        "baseURL": "{env:N1N_RELAY_BASE_URL}/v1"
+      }
+    }
+  }
 }
